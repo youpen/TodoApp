@@ -19,6 +19,5 @@ public class TaskActivity extends AppCompatActivity {
                     .add(R.id.add_todo_fragment, fragment)
                     .commit();
         }
-
     }
 }
