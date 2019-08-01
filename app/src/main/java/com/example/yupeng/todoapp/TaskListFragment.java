@@ -26,7 +26,7 @@ public class TaskListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
+//        super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.tasks_list_fragement, container, false);
         mRecyclerView = v.findViewById(R.id.task_list_layout_id);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
