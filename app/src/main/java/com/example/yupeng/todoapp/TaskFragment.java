@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 public class TaskFragment extends Fragment {
 
@@ -30,6 +31,10 @@ public class TaskFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        if (container == null) {
+            return null;
+        }
         View v = inflater.inflate(R.layout.todo_fragment, container, false);
 
         mDateBtn = v.findViewById(R.id.task_new_data_btn);

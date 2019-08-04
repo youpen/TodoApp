@@ -1,5 +1,6 @@
 package com.example.yupeng.todoapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ public class TaskListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private TaskAdapter mTaskAdapter;
+    private ImageView mTaskSolvedImage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +33,9 @@ public class TaskListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.tasks_list_fragement, container, false);
+
+        mTaskSolvedImage = v.findViewById(R.id.image_solved_id);
+
         mRecyclerView = v.findViewById(R.id.task_list_layout_id);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
@@ -59,17 +65,21 @@ public class TaskListFragment extends Fragment {
             super(inflater.inflate(R.layout.task_list_item, parent, false)); // 这里为什么要加false
             mTaskTitleTextView = itemView.findViewById(R.id.task_title_id);
             mTaskDateTextView = itemView.findViewById(R.id.task_date_id);
+            mTaskSolvedImage = itemView.findViewById(R.id.image_solved_id);
             itemView.setOnClickListener(this);
         }
+
         public void bind(Task task) {
             mTask = task;
             mTaskDateTextView.setText(mTask.getDate().toString());
             mTaskTitleTextView.setText(mTask.getTitle());
+            mTaskSolvedImage.setVisibility(mTask.getSolved() ? View.VISIBLE : View.GONE);
         }
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(getContext(), "111", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), TaskActivity.class);
+            startActivity(intent);
         }
     }
 
