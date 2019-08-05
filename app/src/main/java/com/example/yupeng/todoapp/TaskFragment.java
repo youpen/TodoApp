@@ -38,7 +38,6 @@ public class TaskFragment extends Fragment {
         mTask = TaskLab.get(getActivity()).getTask(mTaskId);
         mTaskEditInput.setText(mTask.getTitle());
         mDateBtn.setText(mTask.getDate().toString());
-
     }
 
     @Nullable
