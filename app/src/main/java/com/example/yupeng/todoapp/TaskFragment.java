@@ -15,7 +15,12 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.util.UUID;
+
 public class TaskFragment extends Fragment {
+
+    public static String sTaskIdKey = "com.example.yupeng.todoapp.taskactivity";
+
 
     private Task mTask;
     private EditText mTaskEditInput;
@@ -25,7 +30,15 @@ public class TaskFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTask = new Task();
+//        mTask = new Task();
+    }
+
+    private void getTaskInfo() {
+        UUID mTaskId = (UUID) getActivity().getIntent().getSerializableExtra(sTaskIdKey);
+        mTask = TaskLab.get(getActivity()).getTask(mTaskId);
+        mTaskEditInput.setText(mTask.getTitle());
+        mDateBtn.setText(mTask.getDate().toString());
+
     }
 
     @Nullable
@@ -38,10 +51,11 @@ public class TaskFragment extends Fragment {
         View v = inflater.inflate(R.layout.todo_fragment, container, false);
 
         mDateBtn = v.findViewById(R.id.task_new_data_btn);
-        mDateBtn.setText(mTask.getDate().toString());
-        mDateBtn.setEnabled(false);
-
+//        mDateBtn.setText(mTask.getDate().toString());
+//        mDateBtn.setEnabled(false);
         mTaskEditInput = v.findViewById(R.id.task_title_input);
+        getTaskInfo();
+
         mTaskEditInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

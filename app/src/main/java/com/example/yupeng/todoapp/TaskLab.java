@@ -12,6 +12,7 @@ public class TaskLab {
     // TODO 为什么mTasks不用static
     private List<Task> mTasks;
 
+    // TODO 单例模式的get方法为什么要传入context
     public static TaskLab get(Context context) {
         if (sTaskLab == null) {
             sTaskLab = new TaskLab();
