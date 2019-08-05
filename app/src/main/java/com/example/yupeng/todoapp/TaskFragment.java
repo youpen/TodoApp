@@ -48,7 +48,6 @@ public class TaskFragment extends Fragment {
             return null;
         }
         View v = inflater.inflate(R.layout.todo_fragment, container, false);
-
         mDateBtn = v.findViewById(R.id.task_new_data_btn);
 //        mDateBtn.setText(mTask.getDate().toString());
 //        mDateBtn.setEnabled(false);
