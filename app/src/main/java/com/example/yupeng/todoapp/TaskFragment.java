@@ -13,29 +13,38 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import java.util.UUID;
 
 public class TaskFragment extends Fragment {
 
-    public static String sTaskIdKey = "com.example.yupeng.todoapp.taskactivity";
-
+    public static final String TASK_ID_KEY = "com.example.yupeng.todoapp.taskactivity";
+    private static final String ARG_TASK_ID = "task_id";
 
     private Task mTask;
     private EditText mTaskEditInput;
     private Button mDateBtn;
     private CheckBox mSolvedCheckBox;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        mTask = new Task();
+    static public TaskFragment newInstance(UUID taskId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_TASK_ID, taskId);
+        TaskFragment instance =  new TaskFragment();
+        instance.setArguments(args);
+        return instance;
     }
 
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+////        mTask = new Task();
+//    }
+
     private void getTaskInfo() {
-        UUID mTaskId = (UUID) getActivity().getIntent().getSerializableExtra(sTaskIdKey);
-        mTask = TaskLab.get(getActivity()).getTask(mTaskId);
+//        UUID mTaskId = (UUID) getActivity().getIntent().getSerializableExtra(TASK_ID_KEY);
+//        mTask = TaskLab.get(getActivity()).getTask(mTaskId);
+        UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
+        mTask = TaskLab.get(getActivity()).getTask(taskId);
         mTaskEditInput.setText(mTask.getTitle());
         mDateBtn.setText(mTask.getDate().toString());
     }

@@ -7,13 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -80,7 +78,7 @@ public class TaskListFragment extends Fragment {
         public void onClick(View view) {
             // 为什么跳转页面要跳到一个新的Activity， 而不是替换当前Activiti的Fragment
             Intent intent = new Intent(getActivity(), TaskActivity.class);
-            intent.putExtra(TaskFragment.sTaskIdKey, mTask.getUUID());
+            intent.putExtra(TaskActivity.EXTRA_TASK_ID, mTask.getUUID());
             startActivity(intent);
         }
     }
