@@ -27,6 +27,10 @@ public class TaskFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
 
     static public TaskFragment newInstance(UUID taskId) {
+//        fragment argument的使用有点复杂。为什么不直接在TaskFragment里创建一个实例变量呢?
+//        或者像我之前想的那样，intent里putExtra的Key是Fragment的静态变量
+//        创建实例变量的方式并不可靠。这是因为，在操作系统重建fragment时(设备配置发生改变) 用户暂时离开当前应用(操作系统按需回收内存)，
+//        任何实例变量都将不复存在。而存在fragment argument里可以继续从getArgument中取回来。
         Bundle args = new Bundle();
         args.putSerializable(ARG_TASK_ID, taskId);
         TaskFragment instance =  new TaskFragment();
@@ -70,7 +74,7 @@ public class TaskFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                mTask.setTitle(charSequence.toString());
             }
 
             @Override

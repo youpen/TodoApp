@@ -38,7 +38,12 @@ public class TaskListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         return v;
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
     }
 
     // 这个方法是创建adapter， 即在recyclerView中插入数据
@@ -46,8 +51,14 @@ public class TaskListFragment extends Fragment {
         TaskLab taskLab = TaskLab.get(getActivity()); // 单例
         List<Task> tasks = taskLab.getTasks();
 
-        mTaskAdapter = new TaskAdapter(tasks);
-        mRecyclerView.setAdapter(mTaskAdapter);
+        // 此处为什么要判断， adapter为什么可能变null？
+        if (mTaskAdapter == null) {
+            mTaskAdapter = new TaskAdapter(tasks);
+            mRecyclerView.setAdapter(mTaskAdapter);
+        } else {
+            mTaskAdapter.notifyDataSetChanged();
+        }
+
     }
 
     private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
