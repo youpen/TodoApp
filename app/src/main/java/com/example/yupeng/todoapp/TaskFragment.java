@@ -1,5 +1,7 @@
 package com.example.yupeng.todoapp;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class TaskFragment extends Fragment {
@@ -26,6 +29,7 @@ public class TaskFragment extends Fragment {
     private EditText mTaskEditInput;
     private Button mDateBtn;
     private CheckBox mSolvedCheckBox;
+    private static int REQUEST_CODE = 0;
 
     static public TaskFragment newInstance(UUID taskId) {
 //        fragment argument的使用有点复杂。为什么不直接在TaskFragment里创建一个实例变量呢?
@@ -51,6 +55,21 @@ public class TaskFragment extends Fragment {
         UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
         mTask = TaskLab.get(getActivity()).getTask(taskId);
         mTaskEditInput.setText(mTask.getTitle());
+        updateDateBtn();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) return;
+        if (requestCode == REQUEST_CODE) {
+        Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+        mTask.setDate(date);
+        updateDateBtn();
+        }
+    }
+
+    private void updateDateBtn() {
         mDateBtn.setText(mTask.getDate().toString());
     }
 
@@ -63,16 +82,14 @@ public class TaskFragment extends Fragment {
         }
         View v = inflater.inflate(R.layout.todo_fragment, container, false);
         mDateBtn = v.findViewById(R.id.task_new_data_btn);
-//        mDateBtn.setText(mTask.getDate().toString());
-//        mDateBtn.setEnabled(false);
+        updateDateBtn();
         mDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                TaskFragment.this.show()
                 FragmentManager fm = getFragmentManager();
                 DatePickerFragment dialog = DatePickerFragment.getInstance(mTask.getDate());
+                dialog.setTargetFragment(TaskFragment.this, REQUEST_CODE);
                 dialog.show(fm, "DatePicker");
-
             }
         });
         mTaskEditInput = v.findViewById(R.id.task_title_input);
