@@ -88,8 +88,8 @@ public class TaskListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             // 为什么跳转页面要跳到一个新的Activity， 而不是替换当前Activiti的Fragment
-            Intent intent = new Intent(getActivity(), TaskActivity.class);
-            intent.putExtra(TaskActivity.EXTRA_TASK_ID, mTask.getUUID());
+            Intent intent = TaskPageActivity.newIntent(getActivity(), mTask.getUUID());
+//            intent.putExtra(TaskActivity.EXTRA_TASK_ID, mTask.getUUID());
             startActivity(intent);
         }
     }

@@ -4,4 +4,6 @@
     <string name="task_title_label">Title</string>
     <string name="task_detail_label">Details</string>
     <string name="task_solved_label">Solved</string>
+    <string name="date_picker_title">Select Date</string>
+    <string name="date_picker_ok">OK</string>
 </resources>

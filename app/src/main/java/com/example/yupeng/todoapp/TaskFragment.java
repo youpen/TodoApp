@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -64,6 +65,16 @@ public class TaskFragment extends Fragment {
         mDateBtn = v.findViewById(R.id.task_new_data_btn);
 //        mDateBtn.setText(mTask.getDate().toString());
 //        mDateBtn.setEnabled(false);
+        mDateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                TaskFragment.this.show()
+                FragmentManager fm = getFragmentManager();
+                DatePickerFragment dialog = DatePickerFragment.getInstance(mTask.getDate());
+                dialog.show(fm, "DatePicker");
+
+            }
+        });
         mTaskEditInput = v.findViewById(R.id.task_title_input);
         getTaskInfo();
 
