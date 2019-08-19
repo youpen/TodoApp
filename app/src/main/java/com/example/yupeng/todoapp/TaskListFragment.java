@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,13 +21,41 @@ import java.util.List;
 
 public class TaskListFragment extends Fragment {
 
+    private static String SAVE_TITLE_KEY = "SAVE_TITLE_KEY";
+
     private RecyclerView mRecyclerView;
     private TaskAdapter mTaskAdapter;
     private ImageView mTaskSolvedImage;
+    private Boolean mIsSubtitleVisible = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        if (savedInstanceState != null) {
+            mIsSubtitleVisible = savedInstanceState.getBoolean(SAVE_TITLE_KEY);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+//        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.new_task:
+                Task task = new Task();
+                TaskLab.get(getActivity()).addTask(task);
+                Intent intent = TaskPageActivity.newIntent(getActivity(), task.getUUID());
+                TaskFragment.newInstance(task.getUUID());
+                startActivity(intent);
+                return true;
+            case R.id.show_subtitle:
+                mIsSubtitleVisible = !mIsSubtitleVisible;
+                getActivity().invalidateOptionsMenu();
+                updateSubtitle();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Nullable
@@ -38,6 +70,24 @@ public class TaskListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_task_list, menu);
+        MenuItem subtitleItem = menu.findItem(R.id.show_subtitle);
+        if (mIsSubtitleVisible) {
+            subtitleItem.setTitle(R.string.hide_subtitle);
+        } else {
+            subtitleItem.setTitle(R.string.show_subtitle);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVE_TITLE_KEY, mIsSubtitleVisible);
     }
 
     @Override
@@ -58,6 +108,19 @@ public class TaskListFragment extends Fragment {
         } else {
             mTaskAdapter.notifyDataSetChanged();
         }
+        updateSubtitle();
+    }
+
+    private void updateSubtitle() {
+        TaskLab taskLab = TaskLab.get(getActivity());
+        int nTasks = taskLab.getTasks().size();
+        String subtitle = getString(R.string.subtitle_format, nTasks);
+        if (!mIsSubtitleVisible) {
+            subtitle = null;
+        }
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setSubtitle(subtitle);
+
 
     }
 

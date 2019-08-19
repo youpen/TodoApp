@@ -31,6 +31,13 @@ public class TaskFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     private static int REQUEST_CODE = 0;
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        TaskLab.get(getActivity()).updateTask(mTask);
+    }
+
     static public TaskFragment newInstance(UUID taskId) {
 //        fragment argument的使用有点复杂。为什么不直接在TaskFragment里创建一个实例变量呢?
 //        或者像我之前想的那样，intent里putExtra的Key是Fragment的静态变量
@@ -82,7 +89,6 @@ public class TaskFragment extends Fragment {
         }
         View v = inflater.inflate(R.layout.todo_fragment, container, false);
         mDateBtn = v.findViewById(R.id.task_new_data_btn);
-        updateDateBtn();
         mDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +100,7 @@ public class TaskFragment extends Fragment {
         });
         mTaskEditInput = v.findViewById(R.id.task_title_input);
         getTaskInfo();
-
+        updateDateBtn();
         mTaskEditInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

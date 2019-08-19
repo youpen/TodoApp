@@ -8,7 +8,7 @@ public class Task {
     private Date mData;
     private String mTitle;
     private String mContent;
-    private Boolean mSolved;
+    private Boolean mSolved = false;
 
     public UUID getUUID() {
         return mUUID;
@@ -49,5 +49,10 @@ public class Task {
     public Task() {
         mUUID = UUID.randomUUID();
         mData = new Date();
+    }
+
+    public Task(UUID uuid) {
+        mUUID = uuid;
+        mData =  new Date();
     }
 }
