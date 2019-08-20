@@ -64,6 +64,7 @@ public class TaskLab {
                 if (cursor.getCount() == 0) {
                     return null;
                 }
+                cursor.moveToFirst(); // 返回的cursor不能离开取值，必须先指定位置，或者调用moveToNext或者moveToFirst
                 return cursor.getTaskFromCursor();
             } finally {
                 cursor.close();
@@ -81,7 +82,7 @@ public class TaskLab {
     public void updateTask(Task task) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues contentValues = getContentValue(task);
-        db.update(TaskTable.NAME, contentValues, "= ?", new String[]{task.getUUID().toString()});
+        db.update(TaskTable.NAME, contentValues, TaskTable.Cols.UUID + " = ?", new String[]{task.getUUID().toString()});
     }
 
     public TaskCursorWrapper queryTask(String whereClause, String[] whereArgs) {

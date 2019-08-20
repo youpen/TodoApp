@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskListFragment extends Fragment {
@@ -100,13 +101,13 @@ public class TaskListFragment extends Fragment {
     private void updateUI() {
         TaskLab taskLab = TaskLab.get(getActivity()); // 单例
         List<Task> tasks = taskLab.getTasks();
-
         // 此处为什么要判断， adapter为什么可能变null？
         if (mTaskAdapter == null) {
             mTaskAdapter = new TaskAdapter(tasks);
             mRecyclerView.setAdapter(mTaskAdapter);
         } else {
             mTaskAdapter.notifyDataSetChanged();
+            mTaskAdapter.setTasks(tasks);
         }
         updateSubtitle();
     }
@@ -183,6 +184,10 @@ public class TaskListFragment extends Fragment {
         public void onBindViewHolder(TaskHolder holder, int position) {
             Task task = mTasks.get(position);
             holder.bind(task);
+        }
+
+        public void setTasks(List<Task> tasks) {
+            mTasks = tasks;
         }
 
         @Override
