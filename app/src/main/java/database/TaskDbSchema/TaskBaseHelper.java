@@ -19,7 +19,7 @@ public class TaskBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("create table " + TaskTable.NAME + "(" +
-                " _id integer primary key autoincrement," +
+//                " _id integer primary key autoincrement," +
                 TaskTable.Cols.UUID + "," +
                 TaskTable.Cols.TITLE + "," +
                 TaskTable.Cols.DATE + "," +

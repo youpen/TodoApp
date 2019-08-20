@@ -4,31 +4,31 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import database.TaskDbSchema.TaskBaseHelper;
-import database.TaskDbSchema.TaskDbSchema;
+import database.TaskDbSchema.TaskCursorWrapper;
 
 import static database.TaskDbSchema.TaskDbSchema.*;
 
 public class TaskLab {
     private static TaskLab sTaskLab;
     private Context mContext;
-    private SQLiteDatabase mDatabase;
-    private static ContentValues getContentValues(Task task) {
-        ContentValues values = new ContentValues();
-        values.put(TaskTable.Cols.UUID, task.getUUID().toString());
-        values.put(TaskTable.Cols.TITLE, task.getTitle());
-        values.put(TaskTable.Cols.DATE, task.getDate().toString());
-        values.put(TaskTable.Cols.SOLVED, task.getSolved() ? 1 : 0);
-        return values;
+    private SQLiteOpenHelper mHelper;
+
+    private ContentValues getContentValue(Task task) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TaskTable.Cols.UUID, task.getUUID().toString());
+        contentValues.put(TaskTable.Cols.TITLE, task.getTitle());
+        contentValues.put(TaskTable.Cols.SOLVED, task.getSolved() ? 1 : 0);
+        contentValues.put(TaskTable.Cols.DATE, task.getDate().toString());
+        return contentValues;
     }
 
-    // TODO 单例模式的get方法为什么要传入context
     public static TaskLab get(Context context) {
         if (sTaskLab == null) {
             sTaskLab = new TaskLab(context);
@@ -38,69 +38,60 @@ public class TaskLab {
 
     private TaskLab(Context context) {
         mContext = context.getApplicationContext();
-        mDatabase = new TaskBaseHelper(mContext)
-                .getWritableDatabase();
+        mHelper = new TaskBaseHelper(mContext);
     }
 
     public List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
-        Cursor cursor =  queryTasks(null, null);
-        while (!cursor.isAfterLast()) {
-            String uuidString = cursor.getString(cursor.getColumnIndex(TaskTable.Cols.UUID));
-            Long date = cursor.getLong(cursor.getColumnIndex(TaskTable.Cols.DATE));
-            int solved = cursor.getInt(cursor.getColumnIndex(TaskTable.Cols.SOLVED));
-            String title = cursor.getString(cursor.getColumnIndex(TaskTable.Cols.TITLE));
-            Task task = new Task(UUID.fromString(uuidString));
-            task.setDate(new Date(date));
-            task.setTitle(title);
-            task.setSolved(solved == 1);
-            tasks.add(task);
+        TaskCursorWrapper cursor = queryTask(null, null);
+        if (cursor != null) {
+            try {
+                while (cursor.moveToNext()) {
+                    Task task = cursor.getTaskFromCursor();
+                    tasks.add(task);
+                }
+            } finally {
+                cursor.close();
+            }
         }
-
         return tasks;
     }
 
     public Task getTask(UUID uuid) {
-//        return queryTasks(uuid.toString(), )
-//        return null;
-        Cursor cursor =  queryTasks(TaskTable.Cols.UUID + " = ?",
-                new String[] { uuid.toString() });
-        while (!cursor.isAfterLast()) {
-            String uuidString = cursor.getString(cursor.getColumnIndex(TaskTable.Cols.UUID));
-            Long date = cursor.getLong(cursor.getColumnIndex(TaskTable.Cols.DATE));
-            int solved = cursor.getInt(cursor.getColumnIndex(TaskTable.Cols.SOLVED));
-            String title = cursor.getString(cursor.getColumnIndex(TaskTable.Cols.TITLE));
-            Task task = new Task(UUID.fromString(uuidString));
-            task.setDate(new Date(date));
-            task.setTitle(title);
-            task.setSolved(solved == 1);
+        TaskCursorWrapper cursor = queryTask(TaskTable.Cols.UUID + " = ?", new String[]{uuid.toString()});
+        if (cursor != null) {
+            try {
+                if (cursor.getCount() == 0) {
+                    return null;
+                }
+                return cursor.getTaskFromCursor();
+            } finally {
+                cursor.close();
+            }
         }
+        return null;
     }
 
     public void addTask(Task task) {
-        ContentValues value = getContentValues(task);
-        mDatabase.insert(TaskTable.NAME, null, value);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues contentValues = getContentValue(task);
+        db.insert(TaskTable.NAME, null, contentValues);
     }
 
     public void updateTask(Task task) {
-        String uuidString = task.getUUID().toString();
-        ContentValues value = getContentValues(task);
-        mDatabase.update(TaskTable.NAME, value,
-                    TaskTable.Cols.UUID + " = ? ", // TODO ？
-                    new String[] { uuidString }
-                );
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues contentValues = getContentValue(task);
+        db.update(TaskTable.NAME, contentValues, "= ?", new String[]{task.getUUID().toString()});
     }
 
-    private Cursor queryTasks(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
+    public TaskCursorWrapper queryTask(String whereClause, String[] whereArgs) {
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        Cursor cursor = db.query(
                 TaskTable.NAME,
-                null,
+                null, // 查询所有column
                 whereClause,
                 whereArgs,
-                null,
-                null,
-                null
-        );
-        return cursor;
+                null, null, null);
+        return new TaskCursorWrapper(cursor);
     }
 }
