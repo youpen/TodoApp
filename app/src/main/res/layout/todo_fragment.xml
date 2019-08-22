@@ -38,4 +38,17 @@
         android:layout_width="wrap_content"
         android:text="@string/task_solved_label"
         />
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/btn_select_reporter"
+        android:text="@string/btn_select_reporter"
+        />
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/btn_send_report"
+        android:text="@string/btn_send_report"
+
+        />
 </LinearLayout>

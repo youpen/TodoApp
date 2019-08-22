@@ -26,6 +26,7 @@ public class TaskLab {
         contentValues.put(TaskTable.Cols.TITLE, task.getTitle());
         contentValues.put(TaskTable.Cols.SOLVED, task.getSolved() ? 1 : 0);
         contentValues.put(TaskTable.Cols.DATE, task.getDate().toString());
+        contentValues.put(TaskTable.Cols.REPORTER, task.getReporter());
         return contentValues;
     }
 

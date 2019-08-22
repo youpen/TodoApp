@@ -9,6 +9,7 @@ public class Task {
     private String mTitle;
     private String mContent;
     private Boolean mSolved = false;
+    private String mReporter;
 
     public UUID getUUID() {
         return mUUID;
@@ -54,5 +55,13 @@ public class Task {
     public Task(UUID uuid) {
         mUUID = uuid;
         mData =  new Date();
+    }
+
+    public String getReporter() {
+        return mReporter;
+    }
+
+    public void setReporter(String mReporter) {
+        this.mReporter = mReporter;
     }
 }
