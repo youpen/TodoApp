@@ -2,7 +2,11 @@ package com.example.yupeng.todoapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,12 +28,15 @@ public class TaskFragment extends Fragment {
 
     public static final String TASK_ID_KEY = "com.example.yupeng.todoapp.taskactivity";
     private static final String ARG_TASK_ID = "task_id";
+    public static final int REQUEST_CONTACT_CODE = 1;
 
     private Task mTask;
     private EditText mTaskEditInput;
     private Button mDateBtn;
     private CheckBox mSolvedCheckBox;
     private static int REQUEST_CODE = 0;
+    private Button mSelectReporterBtn;
+    private Button mSendReporter;
 
 
     @Override
@@ -74,11 +81,32 @@ public class TaskFragment extends Fragment {
         mTask.setDate(date);
         updateDateBtn();
         }
+        if (requestCode == REQUEST_CONTACT_CODE && data != null) {
+
+            Uri contactUri = data.getData();
+            String[] queryField = new String[] {
+                    ContactsContract.Contacts.DISPLAY_NAME
+            };
+            Cursor c = getActivity().getContentResolver().query(contactUri, queryField, null, null, null);
+            try {
+                if (c.getCount() == 0) {
+                    return;
+                }
+                c.moveToFirst();
+                String reporterName = c.getString(0);
+                mTask.setReporter(reporterName);
+                mSelectReporterBtn.setText(mTask.getReporter());
+            } finally {
+                c.close();
+            }
+        }
     }
 
     private void updateDateBtn() {
         mDateBtn.setText(mTask.getDate().toString());
     }
+
+
 
     @Nullable
     @Override
@@ -117,6 +145,32 @@ public class TaskFragment extends Fragment {
             }
         });
 
+        mSendReporter = v.findViewById(R.id.btn_send_report);
+        mSendReporter.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, mTask.getReporter());
+                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.btn_select_reporter));
+                startActivity(intent);
+            }
+        });
+        final Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        mSelectReporterBtn = v.findViewById(R.id.btn_select_reporter);
+        mSelectReporterBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(pickContact, REQUEST_CONTACT_CODE);
+            }
+        });
+
+        if (mSelectReporterBtn != null) {
+            mSelectReporterBtn.setText(mTask.getReporter());
+        }
+
         mSolvedCheckBox = v.findViewById(R.id.task_solved_checkbox);
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -125,6 +179,13 @@ public class TaskFragment extends Fragment {
             }
         });
 
+        PackageManager pm = getActivity().getPackageManager();
+        if (pm.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null) {
+            mSelectReporterBtn.setEnabled(false);
+        }
+
         return v;
     }
+
+
 }
