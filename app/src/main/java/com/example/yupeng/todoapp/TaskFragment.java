@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import java.util.Date;
 import java.util.UUID;
@@ -37,7 +39,8 @@ public class TaskFragment extends Fragment {
     private static int REQUEST_CODE = 0;
     private Button mSelectReporterBtn;
     private Button mSendReporter;
-
+    private ImageButton mOwnerAddHeaderButton;
+    private ImageView mOwnerHeaderImage;
 
     @Override
     public void onPause() {
@@ -127,6 +130,14 @@ public class TaskFragment extends Fragment {
             }
         });
         mTaskEditInput = v.findViewById(R.id.task_title_input);
+        mOwnerHeaderImage = v.findViewById(R.id.detail_page_header);
+        mOwnerAddHeaderButton = v.findViewById(R.id.detail_page_header_add_btn);
+        mOwnerAddHeaderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO take photo
+            }
+        });
         getTaskInfo();
         updateDateBtn();
         mTaskEditInput.addTextChangedListener(new TextWatcher() {

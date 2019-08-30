@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "30631464165",
+    "firebase_url": "https://test-ad5d5.firebaseio.com",
+    "project_id": "test-ad5d5",
+    "storage_bucket": "test-ad5d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30631464165:android:61dacc93c1a903fa",
+        "android_client_info": {
+          "package_name": "com.example.yupeng.todoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30631464165-c9mgagh8ehiccbbt494hmlg6h1k7jo4b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxHJwTnFnvhUO9Pd9iZym6l8oESZFAW3I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30631464165-c9mgagh8ehiccbbt494hmlg6h1k7jo4b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
