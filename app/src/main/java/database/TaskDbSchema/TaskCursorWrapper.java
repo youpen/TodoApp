@@ -21,10 +21,12 @@ public class TaskCursorWrapper extends CursorWrapper {
         String uuidString = mCursor.getString(mCursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.UUID));
         String title = mCursor.getString(mCursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.TITLE));
         Boolean solved = mCursor.getInt(mCursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.SOLVED)) == 1;
+        String reporter = mCursor.getString(mCursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.REPORTER));
         Task task = new Task(UUID.fromString(uuidString));
         task.setSolved(solved);
         task.setTitle(title);
         task.setDate(new Date(date));
+        task.setReporter(reporter);
         return task;
     }
 }

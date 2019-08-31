@@ -10,4 +10,6 @@
     <string name="show_subtitle">Show Subtitle</string>
     <string name="hide_subtitle">Hide Subtitle</string>
     <string name="subtitle_format">%1$d tasks</string>
+    <string name="btn_send_report">Send Task Report</string>
+    <string name="btn_select_reporter">Select Reporter</string>
 </resources>
