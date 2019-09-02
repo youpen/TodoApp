@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -95,5 +96,10 @@ public class TaskLab {
                 whereArgs,
                 null, null, null);
         return new TaskCursorWrapper(cursor);
+    }
+
+    public File getPhotoFile(Task task) {
+        File filesDir = mContext.getFilesDir();
+        return new File(filesDir, task.getPhotoFilename());
     }
 }

@@ -1,5 +1,6 @@
 package com.example.yupeng.todoapp;
 
+import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
@@ -59,6 +60,10 @@ public class Task {
 
     public String getReporter() {
         return mReporter;
+    }
+
+    public String getPhotoFilename() {
+        return "IMG_" + getUUID().toString() + ".jpg";
     }
 
     public void setReporter(String mReporter) {

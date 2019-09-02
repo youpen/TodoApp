@@ -3,16 +3,20 @@ package com.example.yupeng.todoapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +27,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class TaskFragment extends Fragment {
@@ -31,6 +37,7 @@ public class TaskFragment extends Fragment {
     public static final String TASK_ID_KEY = "com.example.yupeng.todoapp.taskactivity";
     private static final String ARG_TASK_ID = "task_id";
     public static final int REQUEST_CONTACT_CODE = 1;
+    public static final int REQUEST_PHOTO = 2;
 
     private Task mTask;
     private EditText mTaskEditInput;
@@ -41,6 +48,7 @@ public class TaskFragment extends Fragment {
     private Button mSendReporter;
     private ImageButton mOwnerAddHeaderButton;
     private ImageView mOwnerHeaderImage;
+    private File mPhotoFile;
 
     @Override
     public void onPause() {
@@ -71,6 +79,7 @@ public class TaskFragment extends Fragment {
 //        mTask = TaskLab.get(getActivity()).getTask(mTaskId);
         UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
         mTask = TaskLab.get(getActivity()).getTask(taskId);
+        mPhotoFile = TaskLab.get(getActivity()).getPhotoFile(mTask);
         mTaskEditInput.setText(mTask.getTitle());
         updateDateBtn();
     }
@@ -132,12 +141,30 @@ public class TaskFragment extends Fragment {
         mTaskEditInput = v.findViewById(R.id.task_title_input);
         mOwnerHeaderImage = v.findViewById(R.id.detail_page_header);
         mOwnerAddHeaderButton = v.findViewById(R.id.detail_page_header_add_btn);
+        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         mOwnerAddHeaderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO take photo
+                Uri uri = FileProvider.getUriForFile(
+                        getActivity(),
+                        "com.example.yupeng.todoapp.fileprovider",
+                        mPhotoFile);
+                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                List<ResolveInfo> cameraActivities = getActivity()
+                        .getPackageManager().queryIntentActivities(captureImage, PackageManager.MATCH_DEFAULT_ONLY);
+//                for (ResolveInfo activity: cameraActivities) {
+//                    getActivity().grantUriPermission(activity.activityInfo.packageName,
+//                            uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                }
+                startActivityForResult(captureImage, REQUEST_PHOTO);
             }
         });
+        // TODO　回去看前几章的packageManager检查
+        PackageManager packageManager = getActivity().getPackageManager();
+        boolean canTakePhoto = mPhotoFile != null && captureImage.resolveActivity(packageManager) != null;
+        Log.d("AAA", canTakePhoto ? "true": "false");
+
+//        mOwnerAddHeaderButton.setEnabled(canTakePhoto);
         getTaskInfo();
         updateDateBtn();
         mTaskEditInput.addTextChangedListener(new TextWatcher() {

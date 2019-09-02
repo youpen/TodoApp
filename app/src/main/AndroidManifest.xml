@@ -17,5 +17,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".TaskPageActivity" />
+        <provider
+            android:authorities="com.example.yupeng.todoapp.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:name="android.support.v4.content.FileProvider">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/files"
+                ></meta-data>
+        </provider>
     </application>
+
 </manifest>
